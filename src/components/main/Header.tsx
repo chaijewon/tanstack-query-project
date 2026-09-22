@@ -50,7 +50,7 @@ function Header() {
                     <a href="#">커뮤니티</a>
         
                     <div className="sub-menu">
-                        <a href="#">자유게시판</a>
+                        <Link to={"/board/list"}>자유게시판</Link>
                         <a href="#">챗봇</a>
                     </div>
                 </div>

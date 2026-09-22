@@ -39,6 +39,7 @@ async function getConnection(){
 
      }
  */
+// /board/list_node?page=1  /board/list_node/1
 app.get("/board/list_node",async (req,res)=>{
     let conn;
     const page=parseInt(req.query.page as string)||1
