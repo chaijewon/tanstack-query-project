@@ -5,6 +5,7 @@ import {useState,useRef} from "react";
 import {useQuery} from "@tanstack/react-query";
 
 import PagePrint from "../../commons/PagePrint";
+import {Link} from "react-router-dom";
 
 function FoodList() {
     // 현재 페이지 설정
@@ -54,7 +55,7 @@ function FoodList() {
                     </h1>
 
                     <p>
-                        원하는 지역과 음식 종류를 선택해보세요.
+                        원하는 지역을 선택해보세요.
                     </p>
                 </div>
 
@@ -129,9 +130,9 @@ function FoodList() {
                                     <span>{food.theme}</span>
                                 </div>
 
-                                <button>
+                                <Link to={"/food/detail/"+food.no}>
                                     자세히 보기 →
-                                </button>
+                                </Link>
 
                             </div>
                         </article>
