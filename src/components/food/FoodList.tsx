@@ -1,7 +1,7 @@
 import apiClient from "../../http-commons";
 import {FoodItem,FoodListData} from "../../commons/commonsData";
 import {AxiosResponse} from "axios";
-import {useState} from "react";
+import {useState,useRef} from "react";
 import {useQuery} from "@tanstack/react-query";
 import * as async_hooks from "node:async_hooks";
 
@@ -9,13 +9,27 @@ function FoodList() {
     // 현재 페이지 설정
     const [curpage, setCurpage] = useState<number>(1);
     const [search , setSearch] = useState<string>("마포");
+    const fdRef=useRef<HTMLInputElement>(null);
     // 서버 연결  => useEffect(()=>{},[curpage])
-    const {isLoading, isError , error , data} = useQuery<AxiosResponse<FoodListData>,Error>({
+    // 자동 호출이 안된다 => refetch
+    const {isLoading, isError , error , data,refetch:foodFind} = useQuery<AxiosResponse<FoodListData>,Error>({
         queryKey: ['food',curpage],
         queryFn: async ()=>{
             return await apiClient.get(`/food/list_react/${search}/${curpage}`);
         }
     })
+    // 검색
+    const find=()=>{
+       if(!search.trim())
+       {
+           return fdRef.current?.focus()
+       }
+       if(fdRef.current)
+       {
+           setSearch(fdRef.current?.value)
+       }
+       foodFind()
+    }
     // 서버를 데이터 전송이 지연되는 경우
     if(isLoading){
         return <h1>Loading...</h1>
@@ -56,10 +70,12 @@ function FoodList() {
                         <input
                             type="text"
                             placeholder="지역 또는 맛집 이름을 입력하세요."
-
+                            ref={fdRef}
+                            value={search}
+                            onChange={e=>setSearch(e.target.value)}
                         />
 
-                        <button type="button">
+                        <button type="button" onClick={find}>
                             검색
                         </button>
 
@@ -91,25 +107,25 @@ function FoodList() {
                         <article className="restaurant-card" key={index}>
 
                             <div className="restaurant-image sushi">
-                                <img/>
+                                <img src={food.poster} alt={""}/>
                             </div>
 
                             <div className="restaurant-info">
 
                                 <div className="rating">
-                                    ⭐
+                                    ⭐ {food.score}
                                 </div>
 
                                 <h3>
-
+                                    {food.name}
                                 </h3>
 
                                 <p>
-
+                                    {food.type}
                                 </p>
 
                                 <div className="tags">
-                                    <span></span>
+                                    <span>{food.theme}</span>
                                 </div>
 
                                 <button>
