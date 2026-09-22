@@ -1134,22 +1134,22 @@ footer {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
-.map-title {
+.map-title2 {
     margin-bottom: 20px;
 }
 
-.map-title span {
+.map-title2 span {
     color: #ff6b35;
     font-size: 14px;
     font-weight: 600;
 }
 
-.map-title h2 {
+.map-title2 h2 {
     margin: 8px 0;
     font-size: 26px;
 }
 
-.map-title p {
+.map-title2 p {
     color: #777;
     margin: 0;
 }
@@ -1161,7 +1161,7 @@ footer {
     border-radius: 15px;
 }
 
-.map-placeholder {
+.map-placeholde {
     width: 100%;
     height: 100%;
     background: #e9ecef;
@@ -1175,7 +1175,7 @@ footer {
     font-size: 40px;
 }
 
-.map-placeholder span {
+.map-placeholde span {
     margin-top: 10px;
     font-size: 15px;
 }

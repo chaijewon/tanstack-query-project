@@ -4,18 +4,24 @@ import {useNavigate,useParams} from "react-router-dom";
 import apiClient from "../../http-commons";
 import {AxiosResponse} from "axios";
 import {useQuery} from "@tanstack/react-query";
+import MapPrint from "../../commons/MapPrint";
 /*
      useQuery : SELECT
      useMutation : INSERT , UPDATE , DELETE
  */
+interface FoodDetailProps {
+    data: FoodDetailItem;
+}
 function FoodDetail() {
     const {no} = useParams();
-    const {isLoading,isError,error,data}=useQuery<FoodDetailItem,Error>({
+    const nav=useNavigate();
+    const {isLoading,isError,error,data}=useQuery<FoodDetailProps,Error>({
         queryKey:['food-detail',no],
         queryFn: async()=>{
             return await apiClient(`/food/detail_react/${no}`);
         }
     })
+    console.log(data?.data)
     if(isLoading){
        return (
            <h1>Loading...</h1>
@@ -26,6 +32,9 @@ function FoodDetail() {
             <h1>Error 발생:{error?.message}</h1>
         )
     }
+
+    const vo:FoodDetailItem|undefined=data?.data
+    console.log(vo)
     return (
         <main className="restaurant-page">
 
@@ -54,7 +63,7 @@ function FoodDetail() {
                 <div className="food-detail-image">
 
                     <img
-                        src="https://images.unsplash.com/photo-1547592180-85f173990554"
+                        src={vo?.poster}
                         alt="맛집 이미지"
                     />
 
@@ -69,21 +78,21 @@ function FoodDetail() {
 
 
                     <div className="rating">
-                        ⭐ 4.8
+                        ⭐ {vo?.score}
                     </div>
 
 
 
 
                     <h2>
-                        마포 맛있는 한식집
+                        {vo?.name}
                     </h2>
 
 
 
 
                     <p className="food-type">
-                        한식 · 마포구 · 맛집
+                        {vo?.type}
                     </p>
 
 
@@ -118,7 +127,7 @@ function FoodDetail() {
                             </strong>
 
                             <p>
-                                서울특별시 마포구 월드컵북로 123
+                                {vo?.address}
                             </p>
 
                         </div>
@@ -131,7 +140,7 @@ function FoodDetail() {
                             </strong>
 
                             <p>
-                                02-1234-5678
+                                {vo?.phone}
                             </p>
 
                         </div>
@@ -144,7 +153,7 @@ function FoodDetail() {
                             </strong>
 
                             <p>
-                                11:00 ~ 22:00
+                                {vo?.time}
                             </p>
 
                         </div>
@@ -155,7 +164,7 @@ function FoodDetail() {
                                 🍴 음식 종류
                             </strong>
                             <p>
-                                한식
+                                {vo?.type}
                             </p>
                         </div>
 
@@ -165,7 +174,7 @@ function FoodDetail() {
                                 💰 가격대
                             </strong>
                             <p>
-                                1만원 ~ 2만원
+                                {vo?.price}
                             </p>
                         </div>
 
@@ -175,7 +184,7 @@ function FoodDetail() {
                                 🚗 주차
                             </strong>
                             <p>
-                                주차 가능
+                                {vo?.parking}
                             </p>
                         </div>
                     </div>
@@ -185,7 +194,7 @@ function FoodDetail() {
 
                     <div className="food-detail-buttons">
 
-                        <button className="back-btn">
+                        <button className="back-btn" onClick={()=>nav(-1)}>
                             ← 목록으로
                         </button>
 
@@ -210,29 +219,30 @@ function FoodDetail() {
                 </h2>
 
                 <p>
-                    마포에서 오랫동안 사랑받고 있는 한식 맛집입니다.
-                    신선한 재료와 정성스러운 음식으로 다양한 메뉴를
-                    즐길 수 있습니다.
+                    {vo?.content}
                 </p>
 
             </section>
 
             <section className="food-map">
 
-                <div className="map-title">
+                <div className="map-title2">
                     <span>📍 LOCATION</span>
                     <h2>매장 위치</h2>
                     <p>
-                        서울특별시 마포구 월드컵북로 123
+                        {vo?.address}
                     </p>
                 </div>
 
                 <div className="map-container">
                     {/* 카카오맵 또는 네이버 지도 API가 들어갈 영역 */}
-                    <div className="map-placeholder">
-                        📍
-                        <span>지도를 불러오는 중입니다.</span>
+                    <div className="map-placeholde">
+                        {
+                            vo &&
+                            <MapPrint address={vo?.address} name={vo?.name}/>
+                        }
                     </div>
+
                 </div>
             </section>
                 <section className="ai-recommend">
