@@ -3,7 +3,8 @@ import {FoodItem,FoodListData} from "../../commons/commonsData";
 import {AxiosResponse} from "axios";
 import {useState,useRef} from "react";
 import {useQuery} from "@tanstack/react-query";
-import * as async_hooks from "node:async_hooks";
+
+import PagePrint from "../../commons/PagePrint";
 
 function FoodList() {
     // 현재 페이지 설정
@@ -138,30 +139,11 @@ function FoodList() {
                 }
             </section>
 
-
-
-            <nav className="pagination">
-
-                <a className="page-arrow"
-
-                >
-                    ‹
-                </a>
-
-                <a
-
-                >
-
-                </a>
-
-                <a className="page-arrow"
-
-                >
-                    ›
-                </a>
-
-            </nav>
-
+            {/* 페이지 설정*/}
+            {
+                data?.data &&
+                <PagePrint data={data.data} setCurpage={setCurpage}/>
+            }
         </main>
     )
 }
