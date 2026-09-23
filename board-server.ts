@@ -82,6 +82,30 @@ app.get("/board/list_node",async (req,res)=>{
     }
 
 });
+// insert
+app.post("/board/insert_node",async (req,res)=>{
+    let conn
+    const {name,subject,content,pwd}=req.body;
+    try {
+        conn = await getConnection();
+        const sql=`INSERT INTO jspboard(name,subject,content,pwd) 
+                   VALUES(:name,:subject,:content,:pwd)`
+        await conn.execute(
+            sql,
+            {name,subject,content,pwd},
+            {autoCommit:true})
+        res.json({msg:"yes"})
+    }catch(error){
+        console.error(error);
+        res.status(500).json({msg:'no'})
+    }
+    finally {
+        if(conn){
+            await conn.close()
+        }
+    }
+
+})
 
 
 

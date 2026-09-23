@@ -22,8 +22,8 @@ function BoardList(){
     // 화면 이동
     const {isLoading,isError,error,data}=useQuery<BoardListData>({
         queryKey:['board-list',curpage],
-        queryFn: async() => {
-            const response=await boardClient.get(`/board/list_node?page=${curpage}`)
+        queryFn: async () => {
+            const response = await boardClient.get(`/board/list_node?page=${curpage}`)
             return response.data
         }
 
@@ -39,6 +39,7 @@ function BoardList(){
             <h1>Error 발생:{error?.message}</h1>
         )
     }
+
     const list=data?.list ?? []
     {/*
          if(data?.list==null || data?.list==undefined)
@@ -46,6 +47,13 @@ function BoardList(){
          else
             list=data.list
     */}
+    const prev=()=>{
+        setCurpage(curpage>1?curpage-1:curpage);
+    }
+    const next=()=>{
+        setCurpage(data && curpage<data?.totalpage?curpage+1:curpage);
+    }
+    // curpage가 변경이 되면 => useQuery를 실행
     console.log(list)
     return (
         <main className="restaurant-page board-page">
@@ -144,36 +152,9 @@ function BoardList(){
 
             {/* 페이지네이션 */}
             <div className="pagination">
-
-                <a href="#">‹</a>
-
-                <a
-                    href="#"
-                    className="active"
-                >
-                    1
-                </a>
-
-                <a href="#">
-                    2
-                </a>
-
-                <a href="#">
-                    3
-                </a>
-
-                <a href="#">
-                    4
-                </a>
-
-                <a href="#">
-                    5
-                </a>
-
-                <a href="#">
-                    ›
-                </a>
-
+                <a onClick={prev}>이전</a>
+                {data?.curpage} page / {data?.totalpage} pages
+                <a onClick={next}>다음</a>
             </div>
 
         </main>

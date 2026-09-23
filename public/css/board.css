@@ -500,3 +500,136 @@
 
     padding: 30px;
 }
+.board-form {
+    margin-top: 30px;
+
+    padding: 35px;
+
+    background: #fff;
+
+    border: 1px solid #e5e9f0;
+
+    border-radius: 16px;
+
+    box-shadow:
+            0 10px 30px
+            rgba(30, 50, 90, 0.05);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #273044;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 14px 16px;
+
+    border: 1px solid #e1e5eb;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #273044;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+.form-group input {
+    height: 48px;
+}
+
+.form-group textarea {
+    min-height: 250px;
+
+    resize: vertical;
+
+    line-height: 1.7;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #ff315b;
+
+    box-shadow:
+            0 0 0 3px
+            rgba(255, 49, 91, 0.08);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a0a6b2;
+}
+
+
+/* 버튼 */
+
+.board-form-buttons {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #edf0f4;
+}
+
+.board-form-buttons button {
+    height: 44px;
+
+    padding: 0 20px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.form-submit-btn {
+    background: #ff315b;
+
+    color: #fff;
+}
+
+.form-submit-btn:hover {
+    background: #e9274d;
+}
+
+.form-cancel-btn {
+    background: #f3f4f7;
+
+    color: #555f70;
+}
+
+.form-cancel-btn:hover {
+    background: #e9ebef;
+}
