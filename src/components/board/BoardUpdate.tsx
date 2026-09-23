@@ -1,8 +1,53 @@
-import {useState, useRef} from 'react'
-import {useNavigate} from "react-router-dom";
-import {useMutation} from "@tanstack/react-query";
+import {useState, useRef,useEffect} from 'react'
+import {useNavigate,useParams} from "react-router-dom";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import boardClient from "../../board-commons";
+import {Axios, AxiosError, AxiosResponse} from "axios";
+/*
+     1. React
+        => 상태 (state)에 따라서 UI를 선언적으로 표현하는 컴포넌트 기반의 라이브러리
+           => useState => 값이 변경시에 화면 변경
+           1) 컴포넌트 기방 UI
+           2) 가상돔 (임시 메모리) 사용 = 속도가 빠르다
+              메모리(가상) ======  실제메모리
+                          diff => 비교 (변경된 부분에 반영)
+           3) 데이터 변경이 자동 렌더링
+     2. 변수 : props / state
+                      | useState : 반드시 => setXxx => HTML 변환
+              | <App name="aaa">   : 데이터 변경이 안된다
+     3. TanStack-Query
+        = 서버 상태 / 클라이언트 상태  => isLoading / isError
+        = 서버의 데이터 전송상태 관리
+        = 캐싱 / 자동 refetch => 저장 => 같은 키가 있는 경우에는 서버 연결하지 않는다
+        = staleTime / cacheTime
+          | 메모리에 남아 있는 시간 => 시간이 지나면 자동 삭제
+          | 새로운 데이터가 저장되기 전에는 재요청을 하지 않는다
+        = React에서 가장 많이 사용
+        = NextJS에서 수정없이 바로 사용이 가능
+          | Vue / Jquery / React => 호환
+        =  useQuery / useMutation
+                      | 데이터 변경 (UPDATE , DELETE , INSERT)
+           | 데이터 읽기 (SELECT)
+     4. 현재 개발
+        MSA => 서버 분산 => 화면 통일
+          NodeJS    SpringBoot  Python
+            |          |          |
+            -----------------------
+                      | => JSON Raect / Vue  => Server / Client
+                    사용자 화면                     |        |
+                                                Back      Front
+     5. docker-compose / 쿠바네티스 : CI / CD
 
+ */
+interface BoardItem{
+    NO:number;
+    NAME:string;
+    SUBJECT:string;
+    CONTENT:string;
+}
+interface BoardResponse{
+    msg:string;
+}
 function BoardUpdate(){
     const nav=useNavigate();
     /*
@@ -20,24 +65,46 @@ function BoardUpdate(){
     const subjectRef=useRef<HTMLInputElement>(null)
     const contentRef=useRef<HTMLTextAreaElement>(null)
     const pwdRef=useRef<HTMLInputElement>(null)
+
+    const {no}=useParams();
+
+    const  {isLoading,isError,error,data}=useQuery<{data:BoardItem}>({
+        queryKey:['board-update',no],
+        queryFn: async()=>{
+            return await boardClient.get<BoardItem>(`/board/update_node?no=${no}`);
+        }
+    })
+    const board=data?.data
+    console.log(data)
+    useEffect(()=>{
+        if(board){
+            setName(board.NAME)
+            setSubject(board.SUBJECT)
+            setContent(board.CONTENT)
+        }
+    },[board])
+    // 값을 채운다
     // => 태그를 제어
-    const {mutate:boardInsert}=useMutation({
+    const {mutate:boardUpdate}=useMutation({
         mutationFn: async ()=>{
-            return await boardClient.post('/board/insert_node',{
+            return await boardClient.put('/board/update_ok_node',{
+                no:no,
                 name:name,
                 subject:subject,
                 content:content,
                 pwd:pwd
             })
         },
-        onSuccess:(res)=>{
+        onSuccess:(res:AxiosResponse<BoardResponse>)=>{
             if(res.data.msg==='yes')
             {
-                window.location.href="/board/list"
+                window.location.href=`/board/detail/${no}`
             }
             else
             {
-                alert("게시판 등록에 실패하셨습니다!!")
+                alert("비밀번호가 틀립니다!!")
+                setPwd("")
+                pwdRef.current?.focus()
             }
         },
         onError:(err:Error)=>{
@@ -45,7 +112,7 @@ function BoardUpdate(){
         }
     })
     // 이벤트 처리
-    const insert=()=>{
+    const update=()=>{
         if(!name.trim())
             return nameRef.current?.focus()
         if(!subject.trim())
@@ -54,7 +121,7 @@ function BoardUpdate(){
             return contentRef.current?.focus()
         if(!pwd.trim())
             return pwdRef.current?.focus()
-        boardInsert()
+        boardUpdate()
 
     }
 
@@ -69,7 +136,7 @@ function BoardUpdate(){
                 </span>
 
                 <h1>
-                    글쓰기
+                    수정하기
                 </h1>
 
                 <p>
@@ -154,7 +221,7 @@ function BoardUpdate(){
 
                     <button
                         className="form-submit-btn"
-                        onClick={()=>insert()}
+                        onClick={()=>update()}
                     >
                         등록하기
                     </button>
