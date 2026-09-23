@@ -187,6 +187,77 @@ app.get("/board/detail_node",async (req,res)=>{
     }
     // 4. 결과값 => JSON으로 생성
 })
+app.get("/board/update_node",async (req,res)=>{
+    let conn
+    const no=req.query.no
+    try {
+        conn = await getConnection();
+        const sql=`SELECT no,name,subject,TO_CHAR(content) as content 
+                   FROM jspboard
+                   WHERE no=${no}
+                  `
+        const result=await conn.execute(sql)
+        console.log(result.rows)
+        res.json(result.rows?.[0])
+
+    }catch(error){
+        console.log(error);
+    }
+    finally {
+        if(conn){
+            await conn.close()
+        }
+    }
+})
+/*
+      board/delete/1/1234 => pathvariable
+                 ---------
+                 req.params.no
+                 req.params.pwd
+      app.delete("/board/delete_node/:no/:pwd")
+ */
+app.put("/board/update_ok_node",async (req,res)=>{
+    let conn
+    // JSON으로 넘어오는 데이터를 받을 경우 : req.body
+    // @RequestBody => JSON => 객체로 변경
+    const {no,name,subject,content,pwd}=req.body;
+    try {
+        conn = await getConnection();
+        const checkSql=`
+                         SELECT COUNT(*) as res 
+                         FROM jspboard
+                         WHERE no=${no} AND pwd=${pwd}
+                       `
+        const check=await conn.execute(checkSql)
+        console.log(check)
+        const count=(check.rows as any[])[0].RES
+        if(count===0)
+        {
+            res.json({msg:"no"})
+            return
+        }
+        const updateSql=`
+                           UPDATE jspboard SET
+                           name=${name},
+                           subject=${subject},
+                           content=${content},
+                           WHERE no=${no}
+                        `
+        await conn.execute(
+            updateSql,
+            {},
+            {autoCommit:true}
+        )
+        res.json({msg:"yes"})
+    }catch(error){
+        console.log(error);
+    }
+    finally {
+        if(conn){
+            await conn.close()
+        }
+    }
+})
 
 
 
