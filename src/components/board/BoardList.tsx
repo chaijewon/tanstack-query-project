@@ -20,7 +20,7 @@ function BoardList(){
     const [curpage, setCurpage] = useState<number>(1);
     const nav=useNavigate();
     // 화면 이동
-    const {isLoading,isError,error,data}=useQuery<BoardListData>({
+    const {isLoading,isError,error,data,refetch:hitIncrement}=useQuery<BoardListData>({
         queryKey:['board-list',curpage],
         queryFn: async () => {
             const response = await boardClient.get(`/board/list_node?page=${curpage}`)
@@ -28,7 +28,9 @@ function BoardList(){
         }
 
     })
-
+    useEffect(()=>{
+        hitIncrement();
+    },[curpage])
     if(isLoading){
         return (
             <h1>Loading...</h1>
@@ -127,7 +129,7 @@ function BoardList(){
                         <span className="board-title">
 
                             <strong>
-                                {vo?.SUBJECT}
+                                <Link to={"/board/detail/"+vo?.NO}>{vo?.SUBJECT}</Link>
                             </strong>
 
                         </span>
