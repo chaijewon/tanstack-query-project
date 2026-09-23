@@ -8,6 +8,7 @@ import BoardList from "./components/board/BoardList";
 import BoardInsert from "./components/board/BoardInsert";
 import BoardDetail from "./components/board/BoardDetail";
 import BoardUpdate from "./components/board/BoardUpdate";
+import BoardDelete from "./components/board/BoardDelete";
 
 /*
      TanStack-Query => Next은 변경 사항이 없이 => 구조만 변경
@@ -113,6 +114,7 @@ function App() {
            <Route path={"/board/insert"} element={<BoardInsert/>}/>
            <Route path={"/board/detail/:no"} element={<BoardDetail/>}/>
            <Route path={"/board/update/:no"} element={<BoardUpdate/>}/>
+           <Route path={"/board/delete/:no"} element={<BoardDelete/>}/>
        </Routes>
        <Footer/>
      </Router>

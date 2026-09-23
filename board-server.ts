@@ -262,6 +262,37 @@ app.put("/board/update_ok_node",async (req,res)=>{
         }
     }
 })
+// delete
+app.delete("/board/delete_node/:no/:pwd",async (req,res)=>{
+    let conn
+    const no=req.params.no
+    const pwd=req.params.pwd
+    try {
+        conn = await getConnection();
+        const sql=`SELECT COUNT(*) as res 
+                   FROM jspboard
+                   WHERE no=:no AND pwd=:pwd
+                  `
+        const check=await conn.execute(sql,{no,pwd})
+        console.log(check.rows)
+        const count=(check.rows as any[])[0].RES
+        if(count===0)
+        {
+            res.json({msg:"no"})
+            return
+        }
+        const deleteSql=`DELETE FROM jspboard WHERE no=${no}`
+        await conn.execute(deleteSql,{},{autoCommit:true})
+        res.json({msg:"yes"})
+    }catch(error){
+        console.log(error);
+    }
+    finally {
+        if(conn){
+            await conn.close()
+        }
+    }
+})
 
 
 
