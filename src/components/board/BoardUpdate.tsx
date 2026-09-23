@@ -96,6 +96,7 @@ function BoardUpdate(){
             })
         },
         onSuccess:(res:AxiosResponse<BoardResponse>)=>{
+            console.log(res)
             if(res.data.msg==='yes')
             {
                 window.location.href=`/board/detail/${no}`

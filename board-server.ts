@@ -220,15 +220,19 @@ app.put("/board/update_ok_node",async (req,res)=>{
     let conn
     // JSON으로 넘어오는 데이터를 받을 경우 : req.body
     // @RequestBody => JSON => 객체로 변경
+    /*
+         String sql="SELECT ~ FROM tableName WHERE name='홍길동'"
+         String sql="SELECT ~ FROM tableName WHERE name=?"
+     */
     const {no,name,subject,content,pwd}=req.body;
     try {
         conn = await getConnection();
         const checkSql=`
                          SELECT COUNT(*) as res 
                          FROM jspboard
-                         WHERE no=${no} AND pwd=${pwd}
+                         WHERE no=:no AND pwd=:pwd
                        `
-        const check=await conn.execute(checkSql)
+        const check=await conn.execute(checkSql,{no,pwd})
         console.log(check)
         const count=(check.rows as any[])[0].RES
         if(count===0)
@@ -238,14 +242,14 @@ app.put("/board/update_ok_node",async (req,res)=>{
         }
         const updateSql=`
                            UPDATE jspboard SET
-                           name=${name},
-                           subject=${subject},
-                           content=${content},
-                           WHERE no=${no}
+                           name=:name,
+                           subject=:subject,
+                           content=:content
+                           WHERE no=:no
                         `
         await conn.execute(
             updateSql,
-            {},
+            {name,subject,content,no},
             {autoCommit:true}
         )
         res.json({msg:"yes"})

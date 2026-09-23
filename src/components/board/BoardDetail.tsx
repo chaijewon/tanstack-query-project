@@ -1,4 +1,4 @@
-import {use, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {useNavigationType,useParams,Link} from "react-router-dom";
 import apiClient from "../../http-commons";
@@ -18,12 +18,18 @@ function BoardDetail() {
     const type=useNavigationType()
     console.log(type)
     // 데이터 받기
-    const {isLoading,isError,error,data}=useQuery<{data:BoardDetailProps}>({
+    const {isLoading,isError,error,data,refetch:boardDetail}=useQuery<{data:BoardDetailProps}>({
         queryKey:['board-detail',no],
         queryFn: async()=>{
             return await boardClient.get(`board/detail_node?no=${no}`)
         }
     })
+    useEffect(()=>{
+        if(type!='POP')
+        {
+            boardDetail()
+        }
+    },[])
     if(isLoading){
         return <h1>Loading...</h1>;
     }
